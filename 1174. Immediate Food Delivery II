@@ -1,0 +1,8 @@
+select round(avg(case when count="immediate" then 1 else 0 end)*100,2) as immediate_percentage
+from
+(select customer_id,
+       min(order_date) as order_date,
+       min(customer_pref_delivery_date),
+       case when min(order_date)=min(customer_pref_delivery_date) then "immediate"else "scheduled" end as count
+from Delivery
+group by customer_id) as temp
