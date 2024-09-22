@@ -1,0 +1,12 @@
+select products.product_id, 
+      case when last_change.price is null then 10 else last_change.price end as price
+
+from (select product_id
+      from Products) as products
+left join 
+(select product_id, change_date,
+first_value(new_price) over(partition by product_id order by change_date DESC) AS price
+FROM Products
+where change_date<='2019-08-16') as last_change
+on products.product_id=last_change.product_id
+group by product_id
