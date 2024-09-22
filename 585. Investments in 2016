@@ -1,0 +1,14 @@
+with cte as
+(select *
+from Insurance
+group by tiv_2015
+having count(*)>1),
+
+cte2 as(select pid, tiv_2015, tiv_2016, lat, lon, concat(lat,lon)
+from Insurance
+group by lat, lon
+having count(*) =1)
+select round(sum(cte2.tiv_2016),2)  as tiv_2016
+from cte
+left join cte2
+using(tiv_2015)
