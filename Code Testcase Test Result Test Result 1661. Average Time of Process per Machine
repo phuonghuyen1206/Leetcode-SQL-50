@@ -1,0 +1,10 @@
+SELECT time.machine_id, ROUND(AVG(time.processing_time),3) AS processing_time
+FROM
+(SELECT end.machine_id,end.process_id,start.activity_type AS start, end.activity_type AS end,start.timestamp as start_time, end.timestamp as end_time, (end.timestamp-start.timestamp) as processing_time
+FROM Activity end
+JOIN Activity start
+ON start.machine_id = end.machine_id
+AND start.process_id = end.process_id
+AND start.activity_type = "start"
+AND end.activity_type = "end") time
+GROUP BY time.machine_id
